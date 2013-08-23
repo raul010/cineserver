@@ -22,7 +22,6 @@ public class GenericDaoImpl<T> implements GenericDao<T> {
 
 		System.err.println("Construtor GenericDaoImpl (grava type) | em = "
 				+ em);
-
 	}
 
 	@Override

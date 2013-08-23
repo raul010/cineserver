@@ -1,6 +1,5 @@
 package br.com.cineagora.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,8 +9,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.PropertyConfigurator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,12 +25,16 @@ import br.com.cineagora.model.element.CinemaElement;
 public class JsoupUtil {
 	private static int alternaHeader;
 	private static Calendar gc = new GregorianCalendar();
+	private static Log log;
+	
+	public JsoupUtil() {
+		log = LogUtil.openLog(this.getClass());
+	}
 	
 	@Transactional
 	public Set<Cinema> fazRequestNosDados(String url) throws IOException {
-		PropertyConfigurator.configure(log4jConfigFile);
 		Set<Cinema> listaDeCinemas = new HashSet<Cinema>();
-
+		
 		Cinema cinema = null;
 		EnderecoResumo endereco = null;
 		FilmeCartaz filme = null;
@@ -86,9 +87,9 @@ public class JsoupUtil {
 					Element elemFilmesDia = elementoComFilmes.select(
 							"div.tabs_box_pan.item-" + i).first();
 					if (elemFilmesDia == null) {
-						log.info("Parece que não há sessão na " + diaDaSemana
+						log.info("Parece que nao ha sessao na " + diaDaSemana
 								+ url + "?pagina=" + pagina, new Exception());
-						log.info("Passando para próximo dia, se houver...");
+						log.info("Passando para proximo dia, se houver...");
 						continue;
 
 					}
@@ -96,7 +97,7 @@ public class JsoupUtil {
 					Elements elemsFilmes = elemFilmesDia
 							.getElementsByClass("w-shareyourshowtime");
 
-					// Totos os filmes (do cinema) do dia que está sendo iterado
+					// Totos os filmes (do cinema) do dia que estao sendo iterado
 					for (Element elemFilme : elemsFilmes) {
 						filme = new FilmeCartaz(i);
 
@@ -123,16 +124,16 @@ public class JsoupUtil {
 			}
 			++qtdeCinema;
 
-			// último request é feito apos a última página válida
+			// Ultimo request feito apos a ultima pagina valida
 			if (elemsBlocoCinema.size() == 0) {
 				elemsBlocoCinema = doc
-						.getElementsMatchingOwnText("Nenhum cinema tem hor.rios que atendam seus crit.rios");
+						.getElementsMatchingOwnText("Nenhum cinema com horario que atenda os seus criterios");
 				if (elemsBlocoCinema.size() > 0)
 					ultimaPagina = true;
 				else
-					throw new RuntimeException("Término Inesperado");
+					throw new RuntimeException("Termino Inesperado");
 			}
-			System.out.println("Fim da Página " + pagina++ + "\n");
+			System.out.println("Fim da Pagina " + pagina++ + "\n");
 		}
 		System.err.println(qtdeCinema + " qtdeCinema");
 		System.err.println(listaDeCinemas.size() + " listaDeCinemas.size()");
@@ -154,7 +155,7 @@ public class JsoupUtil {
 			labelDiaDaSemana = "Segunda";
 			break;
 		case 3:
-			labelDiaDaSemana = "Terça";
+			labelDiaDaSemana = "Terca";
 			break;
 		case 4:
 			labelDiaDaSemana = "Quarta";
@@ -166,7 +167,7 @@ public class JsoupUtil {
 			labelDiaDaSemana = "Sexta";
 			break;
 		case 7:
-			labelDiaDaSemana = "Sábado";
+			labelDiaDaSemana = "Sabado";
 			break;
 		}
 		return labelDiaDaSemana;
@@ -249,11 +250,5 @@ public class JsoupUtil {
 	static String formataEArmazena(Element element) {
 		return StringEscapeUtils.unescapeHtml4(element.text());
 	}
-
-	// Configuracoes de Log
-	private static Log log = LogFactory.getLog(JsoupUtil.class);
-	private static String log4jConfigFile = "src" + File.separator + "main"
-			+ File.separator + "resources" + File.separator
-			+ "log4J.properties";
-
+	
 }

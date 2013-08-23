@@ -1,5 +1,6 @@
 package br.com.cineagora.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Cacheable;
@@ -26,20 +27,22 @@ import br.com.cineagora.util.enums.Genero;
 
 @Entity
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "CinemaRegion", include = "all")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Filme {
+public class Filme implements Serializable {
+	private static final long serialVersionUID = -8925942236632712514L;
+
 	@Column
 	private String nome;
-
+	//nullable=false
 	@Column(length = 30)
 	@Enumerated(EnumType.STRING)
 	@ElementCollection
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@CollectionTable(name = "genero_filme")
-	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "CinemaRegion", include = "all")
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 	private Set<Genero> genero;
-
+	//nullable=false
 	@ManyToMany(mappedBy = "filmes", targetEntity = Cinema.class)
 	private Set<Cinema> cinemas;
 
@@ -66,6 +69,16 @@ public class Filme {
 	public void setCinemas(Set<Cinema> cinemas) {
 		this.cinemas = cinemas;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "filme_seq")

@@ -21,12 +21,14 @@ import br.com.cineagora.util.enums.DataApos;
 
 @Entity(name="filme_cartaz")
 public class FilmeCartaz extends Filme {
+	private static final long serialVersionUID = -5445640160801563619L;
+
 	@Enumerated(EnumType.STRING)
 	private DataApos dia;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(name="horario_filme", joinColumns=@JoinColumn(name="filme_cartaz_id"))
-	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "CinemaRegion", include = "all")
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 	private Set<String> horarios;
 	
 	@Column(name="dia_semana",length=10)

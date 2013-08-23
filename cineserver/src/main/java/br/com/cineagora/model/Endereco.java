@@ -1,5 +1,7 @@
 package br.com.cineagora.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,9 +21,11 @@ import br.com.cineagora.util.enums.Estado;
 
 @Entity
 @Cacheable
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="CinemaRegion", include="all")
+@Cache(usage=CacheConcurrencyStrategy.TRANSACTIONAL)
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public class Endereco {
+public class Endereco implements Serializable {
+	private static final long serialVersionUID = 6348400782533816916L;
+
 	@Enumerated(EnumType.STRING)
 	private Cidade cidade;
 	
