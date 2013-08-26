@@ -15,12 +15,13 @@ import javax.persistence.JoinColumn;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import br.com.cineagora.model.Cinema;
 import br.com.cineagora.model.Filme;
 import br.com.cineagora.util.JsoupUtil;
 import br.com.cineagora.util.enums.DataApos;
 
 @Entity(name="filme_cartaz")
-public class FilmeCartaz extends Filme {
+public class FilmeCartaz extends Filme implements Comparable<FilmeCartaz>{
 	private static final long serialVersionUID = -5445640160801563619L;
 
 	@Enumerated(EnumType.STRING)
@@ -28,7 +29,7 @@ public class FilmeCartaz extends Filme {
 	
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(name="horario_filme", joinColumns=@JoinColumn(name="filme_cartaz_id"))
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	private Set<String> horarios;
 	
 	@Column(name="dia_semana",length=10)
@@ -89,6 +90,10 @@ public class FilmeCartaz extends Filme {
 	public void addHorario(String horarios) {
 		if (!this.horarios.add(horarios))
 			throw new RuntimeException("Set retornou null");
+	}
+	@Override
+	public int compareTo(FilmeCartaz f) {
+		return f.getHorarios().iterator().next().compareTo(f.getHorarios().iterator().next());
 	}
 
 }

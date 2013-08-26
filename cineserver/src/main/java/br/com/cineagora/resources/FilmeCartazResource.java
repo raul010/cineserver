@@ -28,8 +28,8 @@ public class FilmeCartazResource {
 	
 	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	@Transactional
-	public @ResponseBody Set<? extends Cinema> getTudo() {
-		Set<? extends Cinema> cinemas = cinemaDao.findAll(CinemaElement.class);
+	public @ResponseBody List<? extends Cinema> getTudo() {
+		List<? extends Cinema> cinemas = cinemaDao.findAll(CinemaElement.class);
 		return cinemas;
 	}
 	@RequestMapping(value="{cidade}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)

@@ -1,7 +1,7 @@
 package cineserver;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -36,7 +36,7 @@ public class TesteColheDados {
 	@Transactional
 	public void test() throws IOException {
 		String urlCinema = "http://www.adorocinema.com/programacao/em-torno-298363";
-		Set<Cinema> cinemas = jsoup.fazRequestNosDados(urlCinema);
+		List<Cinema> cinemas = jsoup.fazRequestNosDados(urlCinema);
 		for (Cinema c : cinemas) {
 			cinemaDao.create(c);
 		}

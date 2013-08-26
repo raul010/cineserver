@@ -1,6 +1,6 @@
 package cineserver;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cineagora.dao.interfaces.CinemaDao;
@@ -29,7 +30,7 @@ public class TestePersistencia {
 	@Resource(type=CinemaDao.class)
 	CinemaDao cinemaDao;
 	
-	//Ficou obsoleto mas é um bom exemplo de Anotações com Herança
+	//Ficou obsoleto mas é um bom exemplo de Anotacoes com Heranca
 	//CinemaDao pai dos Repositorios, CinemaDaoImpl e CinemaElementDaoImpl
 //	@Resource(name="CinemaElement")
 //	CinemaDao cinemaElementDao;
@@ -39,7 +40,7 @@ public class TestePersistencia {
 	
 	Cinema cinema;
 
-	@Test
+	//@Test
 	public void test() {
 		//fail("Not yet implemented");
 		System.err.println("em --> " + em);
@@ -54,10 +55,10 @@ public class TestePersistencia {
 		cinema = cinemaDao.find(100);
 		System.err.println(cinema.getNome());
 	}
-	//@Test
-	@Transactional
+	@Test
+	@Transactional(readOnly=true)
 	public void recuperaTudo() {
-		Set<? extends Cinema> cinemas = cinemaDao.findAll(CinemaElement.class);
+		List<? extends Cinema> cinemas = cinemaDao.findAll(CinemaElement.class);
 		for (Cinema cinema : cinemas) {
 			System.out.println(cinema.getNome());
 		}

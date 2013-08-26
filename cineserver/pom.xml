@@ -25,6 +25,11 @@
 			<id>jboss-releases</id>
 			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
 		</repository>
+		<repository>
+			<id>terracotta-releases</id>
+			<url>http://www.terracotta.org/download/reflector/releases</url>
+		</repository>
+
 	</repositories>
 
 	<dependencies>
@@ -118,6 +123,12 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
 			<version>${hibernate.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>ehcache-core</artifactId>
+					<groupId>net.sf.ehcache</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Para usar non strict read write cache -->
@@ -133,26 +144,15 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>1.0.0.Final</version>
-		</dependency>
-		<!-- dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-infinispan</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency-->
-
-		<dependency>
-			<groupId>org.infinispan</groupId>
-			<artifactId>infinispan-core</artifactId>
-			<version>5.3.0.Final</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.infinispan</groupId>
-			<artifactId>infinispan-cachestore-jdbc</artifactId>
-			<version>5.3.0.Final</version>
 		</dependency>
 
 		<dependency>
@@ -180,6 +180,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>2.2.2</version>
@@ -188,12 +194,6 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
 		</dependency>
 
 
@@ -211,20 +211,14 @@
 					<outputEncoding>UTF-8</outputEncoding>
 				</configuration>
 			</plugin>
-			<!-- >plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							<Dependencies>org.infinispan,
-								org.infinispan.cachestore.jdbc,
-								org.hibernate
-							</Dependencies>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin-->
 		</plugins>
 	</build>
 </project>
+
+<!-- dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-infinispan</artifactId> 
+	<version>${hibernate.version}</version> </dependency -->
+
+<!-- dependency> <groupId>org.infinispan</groupId> <artifactId>infinispan-core</artifactId> 
+	<version>5.3.0.Final</version> </dependency> <dependency> <groupId>org.infinispan</groupId> 
+	<artifactId>infinispan-cachestore-jdbc</artifactId> <version>5.3.0.Final</version> 
+	</dependency -->

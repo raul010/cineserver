@@ -1,6 +1,7 @@
 package br.com.cineagora.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Cacheable;
@@ -27,7 +28,7 @@ import br.com.cineagora.util.enums.Genero;
 
 @Entity
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Filme implements Serializable {
 	private static final long serialVersionUID = -8925942236632712514L;
@@ -40,7 +41,7 @@ public class Filme implements Serializable {
 	@ElementCollection
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@CollectionTable(name = "genero_filme")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	private Set<Genero> genero;
 	//nullable=false
 	@ManyToMany(mappedBy = "filmes", targetEntity = Cinema.class)
@@ -78,6 +79,30 @@ public class Filme implements Serializable {
 		this.id = id;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Filme))
+			return false;
+		Filme other = (Filme) obj;
+		if (nome == null) {
+			if (other.nome != null)
+				return false;
+		} else if (!nome.equals(other.nome))
+			return false;
+		return true;
+	}
 
 
 	@Id

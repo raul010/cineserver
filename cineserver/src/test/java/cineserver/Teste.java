@@ -76,11 +76,11 @@ public class Teste {
 		}
 	}
 
-	private class FilmeCartazAdapter implements JsonDeserializer<FilmeCartaz> {
-		public FilmeCartaz deserialize(JsonElement json, Type t,
+	private class FilmeCartazAdapter implements JsonDeserializer<Filme> {
+		public Filme deserialize(JsonElement json, Type t,
 				JsonDeserializationContext context) throws JsonParseException {
 			return context.deserialize(json.getAsJsonObject(),
-					FilmeCartaz.class);
+					Filme.class);
 		}
 	}
 }

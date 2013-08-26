@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="ehcache.xsd">
+    
+	 <defaultCache
+		maxEntriesLocalHeap="500"
+	     eternal="true"
+	     timeToIdleSeconds="120"
+	     timeToLiveSeconds="120"
+	     diskExpiryThreadIntervalSeconds="120"
+	     memoryStoreEvictionPolicy="LRU" > 
+		<persistence strategy="localTempSwap" />
+	</defaultCache>
+	 <cache
+	    name="cinemaRegion"
+		maxEntriesLocalHeap="500"
+	    eternal="true"
+	    timeToIdleSeconds="0"
+	    timeToLiveSeconds="0"
+	    overflowToDisk="false" 
+		diskPersistent="false" >
+	</cache>
+	<cache
+		name="br.com.cineagora.model.Cinema.filmes"
+		maxEntriesLocalHeap="500"
+	    eternal="true"
+	    timeToIdleSeconds="0"
+	    timeToLiveSeconds="0" >
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<cache
+		name="br.com.cineagora.model.Cinema"
+		maxEntriesLocalHeap="500"
+	    eternal="true"
+	    timeToIdleSeconds="0"
+	    timeToLiveSeconds="0">
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<cache
+		name="br.com.cineagora.model.Filme"
+		maxEntriesLocalHeap="500"
+	    eternal="true"
+	    timeToIdleSeconds="0"
+	    timeToLiveSeconds="0" >
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<cache
+		maxEntriesLocalHeap="500"
+		name="br.com.cineagora.model.Endereco"
+		eternal="true"
+		timeToIdleSeconds="0"
+		timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="LRU" >
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	<transactionManagerLookup 
+		class="net.sf.ehcache.transaction.manager.DefaultTransactionManagerLookup" 
+		properties="java:jboss/infinispan/container/hibernate" 
+		propertySeparator=";" />
+		
+</ehcache>
+
+<!-- Default -->
+<!-- timeToIdleSeconds="120" -->
+<!-- timeToLiveSeconds="120" -->
+
+<!-- set "maxBytesLocalOffHeap" to the amount of off-heap memory you
+  want to use.  This memory is invisible to the Java garbage collector,
+  providing gigabytes to terabytes of in-memory data without garbage
+  collection pauses. --> 

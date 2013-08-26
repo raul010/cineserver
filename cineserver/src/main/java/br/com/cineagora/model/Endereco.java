@@ -21,7 +21,7 @@ import br.com.cineagora.util.enums.Estado;
 
 @Entity
 @Cacheable
-@Cache(usage=CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class Endereco implements Serializable {
 	private static final long serialVersionUID = 6348400782533816916L;
