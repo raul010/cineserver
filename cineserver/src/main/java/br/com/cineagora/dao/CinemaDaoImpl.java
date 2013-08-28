@@ -27,6 +27,7 @@ import br.com.cineagora.util.JsoupUtil;
 import br.com.cineagora.util.LogUtil;
 import br.com.cineagora.util.colecoes.SortCinemaElementNome;
 import br.com.cineagora.util.colecoes.SortFilmeCartazHorario;
+import br.com.cineagora.util.enums.Cidade;
 
 @Repository
 public class CinemaDaoImpl extends GenericDaoImpl<Cinema> implements CinemaDao {
@@ -84,6 +85,20 @@ public class CinemaDaoImpl extends GenericDaoImpl<Cinema> implements CinemaDao {
 		Collections.sort(cinemas, new SortCinemaElementNome());
 		
 		
+		return cinemas;
+	}
+	
+	@Override
+	public List<? extends Cinema> findCinemaPorCidades(Class<? extends Cidade> clazz) {
+		TypedQuery<CinemaElement> query = null;
+		List<CinemaElement> cinemas = null;
+		if (clazz.getName().equals(Cinema.class.getName())) {
+			// Nao ha necessidade de implementar ainda.
+
+		} else if (clazz.getName().equals(CinemaElement.class.getName())) {
+			
+		}
+
 		return cinemas;
 	}
 
@@ -243,4 +258,5 @@ public class CinemaDaoImpl extends GenericDaoImpl<Cinema> implements CinemaDao {
 			log.error("Erro de Log (ENTITY STATS): " + e.getClass() + " " + e.getMessage());
 		}
 	}
+
 }

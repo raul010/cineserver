@@ -17,6 +17,8 @@ public class EnderecoResumo extends Endereco {
 	}
 
 	public void setDadosRecebidos(String dadosRecebidos) {
+		
+		
 		this.dadosRecebidos = dadosRecebidos;
 	}
 	

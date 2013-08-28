@@ -23,30 +23,24 @@ import br.com.cineagora.model.element.CinemaElement;
 @RequestMapping("cinemas")
 public class FilmeCartazResource {
 
-	@Resource(type=CinemaDao.class)
+	@Resource(type = CinemaDao.class)
 	CinemaDao cinemaDao;
-	
-	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+
+	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Transactional
-	public @ResponseBody List<? extends Cinema> getTudo() {
+	public @ResponseBody
+	List<? extends Cinema> getTudo() {
 		List<? extends Cinema> cinemas = cinemaDao.findAll(CinemaElement.class);
 		return cinemas;
 	}
-	@RequestMapping(value="{cidade}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+
+	@RequestMapping(value = "/cidade-estado/{local}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Transactional
-	public @ResponseBody List<Banda> getTudo(@PathVariable String cidade) {
-		System.out.println(cidade);
-		Banda b = new Banda();
-		b.setAnoDeFormacao(1985);
-		b.setId(1);
-		b.setNome("Raul");
-		b.setLista(new ArrayList<String>());
-		Banda b2 = new Banda();
-		b2.setAnoDeFormacao(1985);
-		b2.setId(1);
-		b2.setNome("Raul");
-		List<Banda> bandas = Arrays.asList(new Banda[]{b, b2});
-		
-		return bandas;
+	public @ResponseBody
+	List<? extends Cinema> getCinemaPorCidade(@PathVariable String local) {
+		System.out.println(local);
+		List<? extends Cinema> cinemas = null;//cinemaDao.findAll(CinemaElement.class);
+
+		return cinemas;
 	}
 }

@@ -29,7 +29,18 @@ import org.springframework.stereotype.Repository;
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "cinemaRegion")
-@NamedQueries({ @NamedQuery(name = "CinemaElement.findAll", query = "SELECT DISTINCT(c) FROM CinemaElement c LEFT JOIN FETCH c.filmes", hints = { @QueryHint(name = "org.hibernate.cacheable", value = "true"), }) })
+@NamedQueries({
+		@NamedQuery(name = "CinemaElement.findAll", 
+				query = "SELECT DISTINCT(c) FROM CinemaElement c LEFT JOIN FETCH c.filmes", 
+				hints = { @QueryHint(name = "org.hibernate.cacheable", 
+				value = "true"), }),
+		@NamedQuery(name = "CinemaElementPorCidade.findAll",
+				query = "SELECT DISTINCT(c) FROM CinemaElement c "
+						+ "INNER JOIN FETCH c.endereco "
+						+ "LEFT JOIN FETCH c.filmes ",
+				hints = { @QueryHint(name = "org.hibernate.cacheable", 
+				value = "true"), }) 
+		})
 @Repository
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Cinema implements Serializable {
@@ -54,7 +65,8 @@ public class Cinema implements Serializable {
 	}
 
 	/*
-	 * TODO Metodo criado para ser Set, perde o intuito para uso com List, remover depois
+	 * TODO Metodo criado para ser Set, perde o intuito para uso com List,
+	 * remover depois
 	 */
 	public boolean addFilme(Filme filme) {
 		return this.filmes.add(filme);
@@ -79,31 +91,31 @@ public class Cinema implements Serializable {
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
 	}
-	
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
-//		return result;
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj)
-//			return true;
-//		if (obj == null)
-//			return false;
-//		if (!(obj instanceof Cinema))
-//			return false;
-//		Cinema other = (Cinema) obj;
-//		if (nome == null) {
-//			if (other.nome != null)
-//				return false;
-//		} else if (!nome.equals(other.nome))
-//			return false;
-//		return true;
-//	}
+
+	// @Override
+	// public int hashCode() {
+	// final int prime = 31;
+	// int result = 1;
+	// result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+	// return result;
+	// }
+	//
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (this == obj)
+	// return true;
+	// if (obj == null)
+	// return false;
+	// if (!(obj instanceof Cinema))
+	// return false;
+	// Cinema other = (Cinema) obj;
+	// if (nome == null) {
+	// if (other.nome != null)
+	// return false;
+	// } else if (!nome.equals(other.nome))
+	// return false;
+	// return true;
+	// }
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cinema_seq")
