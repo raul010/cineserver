@@ -64,10 +64,6 @@ public class Cinema implements Serializable {
 		filmes = new ArrayList<>();
 	}
 
-	/*
-	 * TODO Metodo criado para ser Set, perde o intuito para uso com List,
-	 * remover depois
-	 */
 	public boolean addFilme(Filme filme) {
 		return this.filmes.add(filme);
 	}

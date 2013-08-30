@@ -36,7 +36,7 @@ public class TesteColheDados {
 	@Transactional
 	public void test() throws IOException {
 		String urlCinema = "http://www.adorocinema.com/programacao/em-torno-298363";
-		List<Cinema> cinemas = jsoup.fazRequestNosDados(urlCinema);
+		List<Cinema> cinemas = jsoup.obtemCinemasDoSite(urlCinema);
 		for (Cinema c : cinemas) {
 			cinemaDao.create(c);
 		}

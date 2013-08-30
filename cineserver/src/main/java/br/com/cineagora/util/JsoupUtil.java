@@ -34,7 +34,7 @@ public class JsoupUtil {
 	}
 
 	@Transactional
-	public List<Cinema> fazRequestNosDados(String url) throws IOException {
+	public static List<Cinema> obtemCinemasDoSite(String url) {
 		List<Cinema> listaDeCinemas = new ArrayList<>();
 
 		Cinema cinema = null;
@@ -47,12 +47,18 @@ public class JsoupUtil {
 
 		int qtdeCinema = 0;
 		// Default = 0. Para testes, definir ultima pagina do site.
-		int pagina = 6;
+		int pagina = 0;
 		boolean ultimaPagina = false;
 
 		while (!ultimaPagina) {
 
-			doc = configuraEFazRequest(url, pagina);
+			try {
+				doc = configuraEFazRequest(url, pagina);
+			} catch (IOException e) {
+				e.printStackTrace();
+				//DEBUG
+				throw new RuntimeException(e);
+			}
 
 			// bloco com nome dos cinemas
 			elemsBlocoCinema = doc.getElementsByClass(("j_entity_container"));
@@ -73,8 +79,8 @@ public class JsoupUtil {
 				Element enderecoCinema = elemCine.getElementsByClass("lighten").get(1);
 				imprime(true, cine, enderecoCinema);
 
-				cinema.setNome(formataEArmazena(cine));
-				endereco.setDadosRecebidos(formataEArmazena(enderecoCinema));
+				cinema.setNome(formataHtml(cine));
+				endereco.setDadosRecebidos(formataHtml(enderecoCinema));
 
 				cinema.setEndereco(endereco);
 
@@ -105,25 +111,16 @@ public class JsoupUtil {
 						Elements elemsHora = elemHora.getElementsByAttribute("data-times");
 
 						for (Element hora : elemsHora) {
-							filme.addHorario(formataEArmazena(hora));
+							filme.addHorario(formataHtml(hora));
 						}
 						// JSON - Nao utilizado ainda
 						imprime(attrFilme);
 
-						filme.setNome(formataEArmazena(elemFilme));
-
-						/**
-						 * TODO Remover esta verificacao se for manter List ao
-						 * inves de Set
-						 */
-						if (!cinema.addFilme(filme))
-							log.error("Item Duplicado [leak salvo] --> " + filme.toString());
-
+						filme.setNome(formataHtml(elemFilme));
+						cinema.addFilme(filme);
 					}
 				}
-				if (!listaDeCinemas.add(cinema))
-					throw new RuntimeException("SET Retornou NULL");
-
+				listaDeCinemas.add(cinema);
 				contFilme++;
 			}
 			++qtdeCinema;
@@ -244,7 +241,7 @@ public class JsoupUtil {
 		}
 	}
 
-	static String formataEArmazena(Element element) {
+	public static String formataHtml(Element element) {
 		return StringEscapeUtils.unescapeHtml4(element.text());
 	}
 

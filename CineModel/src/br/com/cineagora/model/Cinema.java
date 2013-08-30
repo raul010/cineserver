@@ -11,7 +11,7 @@ public class Cinema  {
 	private Set<Filme> filmes;
 
 	public Cinema() {
-		filmes = new HashSet<Filme>();
+		filmes = new HashSet<>();
 	}
 
 	public void addFilme(Filme filme) {
