@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-deployment-structure>
-	<!-- This corresponds to the top level deployment. For a war this is the 
-		war's module, for an ear -->
-	<!-- This is the top level ear module, which contains all the classes in 
-		the EAR's lib folder -->
 	<deployment>
+		<dependencies>
+			<!-- isto expoe ao war, a classe org.jboss.jca.adapters.jdbc.WrapperDataSource 
+				(que o JBOSS fornece via JNDI) para que o Spring AOP possa escanear em Runtime 
+				evitando portanto o 'java.lang.IllegalArgumentException: warning no match 
+				for this type name: (...) [Xlint:invalidAbsoluteTypeName].' -->
+			<module name="org.jboss.ironjacamar.jdbcadapters" slot="main" />
+			<!-- module name="org.apache.log4j2.core" /> <module name="org.apache.log4j2.api" 
+				/ -->
+
+		</dependencies>
 		<!-- Exclusions allow you to prevent the server from automatically adding 
 			some dependencies -->
 		<exclusions>

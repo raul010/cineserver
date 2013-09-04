@@ -7,5 +7,4 @@ import br.com.cineagora.util.enums.Cidade;
 
 public interface CinemaDao extends GenericDao<Cinema>{
 	public List<? extends Cinema> findAll(Class<? extends Cinema> clazz);
-	public List<? extends Cinema> findCinemaPorCidades(Class<? extends Cidade> clazz);
 }
