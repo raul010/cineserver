@@ -66,6 +66,7 @@ public class TesteRequestNosResources {
 			String result = this.mockMvc.perform(
 					get(link)
 					.contentType(MediaType.valueOf("text/html;charset=UTF-8"))
+					.characterEncoding("UTF-8")
 					)
 					//Espera
 					.andExpect(status().isOk())

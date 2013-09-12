@@ -1,14 +1,16 @@
 package br.com.cineagora.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,6 +28,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.stereotype.Repository;
 
+import br.com.cineagora.util.enums.Estado;
+
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "cinemaRegion")
@@ -38,8 +42,9 @@ import org.springframework.stereotype.Repository;
 				query = "SELECT DISTINCT(c) FROM CinemaElement c "
 						+ "INNER JOIN FETCH c.endereco "
 						+ "LEFT JOIN FETCH c.filmes ",
-				hints = { @QueryHint(name = "org.hibernate.cacheable", 
-				value = "true"), }) 
+				hints = { @QueryHint(
+						name = "org.hibernate.cacheable", 
+						value = "true"), }) 
 		})
 @Repository
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -51,25 +56,33 @@ public class Cinema implements Serializable {
 	// nullable=false
 	@OneToOne(cascade = CascadeType.PERSIST)
 	private Endereco endereco;
+	
+	@Column(length=50, nullable = false)
+	private String cidade;
 
-	// Os filmes que vêm dentro do cinema, devem vir na ordem de inclusão, deve
-	// ser List
+	@Column(length=30, nullable = false)
+	private String estado;
+
 	@Column(nullable = false)
 	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name = "join_cinema_filme")
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	private List<Filme> filmes;
+	private Set<Filme> filmes;
 
 	public Cinema() {
-		filmes = new ArrayList<>();
+		filmes = new HashSet<>();
 	}
 
 	public boolean addFilme(Filme filme) {
 		return this.filmes.add(filme);
 	}
 
-	public List<Filme> getFilmes() {
+	public Set<Filme> getFilmes() {
 		return filmes;
+	}
+	
+	public void setFilmes(Set<Filme> filmes) {
+		this.filmes = filmes;
 	}
 
 	public String getNome() {
@@ -88,31 +101,47 @@ public class Cinema implements Serializable {
 		this.endereco = endereco;
 	}
 
-	// @Override
-	// public int hashCode() {
-	// final int prime = 31;
-	// int result = 1;
-	// result = prime * result + ((nome == null) ? 0 : nome.hashCode());
-	// return result;
-	// }
-	//
-	// @Override
-	// public boolean equals(Object obj) {
-	// if (this == obj)
-	// return true;
-	// if (obj == null)
-	// return false;
-	// if (!(obj instanceof Cinema))
-	// return false;
-	// Cinema other = (Cinema) obj;
-	// if (nome == null) {
-	// if (other.nome != null)
-	// return false;
-	// } else if (!nome.equals(other.nome))
-	// return false;
-	// return true;
-	// }
+	public String getCidade() {
+		return cidade;
+	}
 
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Cinema))
+			return false;
+		Cinema other = (Cinema) obj;
+		if (nome == null) {
+			if (other.nome != null)
+				return false;
+		} else if (!nome.equals(other.nome))
+			return false;
+		return true;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cinema_seq")
 	@SequenceGenerator(name = "cinema_seq", sequenceName = "cinema_seq")

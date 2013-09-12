@@ -2,10 +2,12 @@ package br.com.cineagora.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
@@ -51,6 +53,16 @@ public class Util {
 	@PersistenceContext
 	public void setEntityManager (EntityManager emg) {
 		em = emg;
+	}
+
+	public static String fazDecodeDaString(String string) {
+		try {
+			string = URLDecoder.decode(string, UTF_8);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return string;
 	}
 
 	/**
@@ -99,7 +111,11 @@ public class Util {
 
 		return  prop.get(key).toString();
 	}
-
+	/**
+	 * Faz o encode correto, apenas da parte query do link
+	 * @param url
+	 * @return ascII
+	 */
 	public static String fazEncodeParaASCII(String url) {
 		URL urlApi;
 		URI uri;
@@ -173,7 +189,7 @@ public class Util {
 	/**
 	 * Analisa API Cache
 	 */
-	public static void logAuditStatsInfo() {
+	public static void analisaDadosDaAPIDeCacheParaLog() {
 		Session session = null;
 		SessionFactory sf = null;
 		Statistics stats = null;
@@ -315,5 +331,4 @@ public class Util {
 			LOG.error("Erro de Log (ENTITY STATS): " + e.getClass() + " " + e.getMessage());
 		}
 	}
-
 }

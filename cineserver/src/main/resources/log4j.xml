@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+
+	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="ERROR" />
+		<param name="Encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ss.SSS} [%t] (%F:%L) \| %m%n" />
+		</layout>
+	</appender>
+	
+	<!-- appender name="rollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="append" value="false" />
+		<param name="Encoding" value="UTF-8" />
+		<param name="File" value="src/main/webapp/WEB-INF/logs/cinelog.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{HH:mm:ss.SSS} %-5p [%t] %c{10} - %m%n" />
+		</layout>
+	</appender>
+
+	<category name="br.com.cineagora">
+		<priority value="TRACE" />
+		<appender-ref ref="rollingAppender" />
+	</category -->
+
+	<!-- ### Limit categories ### -->
+	<!-- category name="org.hibernate">
+		<priority value="WARN" />
+		<appender-ref ref="rollingAppender" />
+	</category>
+	<category name="org.jboss.as.server">
+		<priority value="WARN" />
+		<appender-ref ref="rollingAppender" />
+	</category>
+	<category name="org.springframework">
+		<priority value="WARN" />
+		<appender-ref ref="rollingAppender" />
+	</category -->
+
+
+	<root>
+		<priority value="TRACE" />
+		<appender-ref ref="consoleAppender" />
+	</root>
+</log4j:configuration>
+
+<!-- Configuracoes log4j2.xml <configuration status="warn" name="cineserver" 
+	packages=""> <appenders> <RollingFile name="File1" fileName="src/main/webapp/WEB-INF/logs/cinelog.log" 
+	filePattern="src/main/webapp/WEB-INF/logs/cinelog-%d{MM-dd-yyyy}.log.gz"> 
+	<RegexFilter regex=".*" onMatch="ACCEPT" onMismatch="DENY" /> <PatternLayout> 
+	<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" </pattern> 
+	</PatternLayout> <Policies> <TimeBasedTriggeringPolicy /> </Policies> </RollingFile> 
+	<Console name="STDOUT" target="SYSTEM_OUT"> <PatternLayout pattern="%d{HH:mm:ss.SSS} 
+	[%t] %-5level %logger{36} - %msg%n" /> </Console> </appenders> <loggers> 
+	<root level="info"> <appender-ref ref="File1" /> </root> </loggers> </configuration> -->

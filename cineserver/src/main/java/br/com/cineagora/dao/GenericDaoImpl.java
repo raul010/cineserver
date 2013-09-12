@@ -8,8 +8,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import br.com.cineagora.dao.interfaces.GenericDao;
 
+@Transactional
 public class GenericDaoImpl<T> implements GenericDao<T> {
 	@PersistenceContext
 	protected EntityManager em;

@@ -3,6 +3,8 @@ package br.com.cineagora.dao;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -10,12 +12,6 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.stat.EntityStatistics;
-import org.hibernate.stat.QueryStatistics;
-import org.hibernate.stat.SecondLevelCacheStatistics;
-import org.hibernate.stat.Statistics;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +39,6 @@ public class CinemaDaoImpl extends GenericDaoImpl<Cinema> implements CinemaDao {
 	@Override
 	@Transactional(readOnly = true)
 	public List<? extends Cinema> findAll(Class<? extends Cinema> clazz) {
-		LOG.info("info");
-		LOG.error("error");
-		LOG.trace("trace");
-		LOG.debug("debug");
 		TypedQuery<CinemaElement> query = null;
 		List<CinemaElement> cinemas = null;
 		if (clazz.getName().equals(Cinema.class.getName())) {
@@ -57,14 +49,16 @@ public class CinemaDaoImpl extends GenericDaoImpl<Cinema> implements CinemaDao {
 			query = em.createNamedQuery("CinemaElement.findAll", CinemaElement.class);
 			cinemas = query.getResultList();
 			for (Cinema c : cinemas) {
-				List<Filme> filmes = c.getFilmes();
-				Collections.sort(filmes, new SortFilmeCartazHorario());
-				// Hibernate.initialize(filmes);
+				//Ordena Filmes
+				Set<Filme> filmes = new TreeSet<Filme>(new SortFilmeCartazHorario());
+				filmes.addAll(c.getFilmes());
+				c.setFilmes(filmes);
+				
 				for (Filme filme : filmes) {
 					if(filme != null)
 						filme.setCinemas(new HashSet<Cinema>());
 					else 
-						throw new RuntimeException("Filme n�o poderia vir null");
+						throw new RuntimeException("Filme nao poderia vir null");
 				}
 			}
 		} else {
@@ -76,6 +70,14 @@ public class CinemaDaoImpl extends GenericDaoImpl<Cinema> implements CinemaDao {
 		
 		
 		return cinemas;
+	}
+
+	@Override
+	public void createAll(List<? extends Cinema> listaDeCinemas) {
+		for (Cinema c : listaDeCinemas) {
+			this.create(c);
+		}
+		
 	}
 	
 }

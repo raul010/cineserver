@@ -26,10 +26,15 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import br.com.cineagora.util.enums.Genero;
 
+/**
+ * Representa 1 Filme com o mesmo nome na aplicacao.
+ * @author Raul
+ *
+ */
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Filme implements Serializable {
 	private static final long serialVersionUID = -8925942236632712514L;
 

@@ -1,6 +1,10 @@
+<!DOCTYPE html>
 <html>
-<body>
-<h2>Hello World</h2>
-<h2> ${movie} </h2>
+<body bgcolor="black">
+	<center>
+		<iframe id="ytplayer" type="text/html" width="1000" height="750"
+			src="https://www.youtube.com/embed/t9CXmEUwvgM?autoplay=1"
+			frameborder="0" allowfullscreen> </iframe>
+	</center>
 </body>
 </html>

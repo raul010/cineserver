@@ -32,7 +32,7 @@ public class ProfilesELogs {
 
 	@Around("execution(* "+ PACKAGE_PATH + ".dao.CinemaDaoImpl.findAll(..))")
 	public Object profileBaseOuCache(ProceedingJoinPoint pjp) throws Throwable {
-		Util.logAuditStatsInfo();
+		Util.analisaDadosDaAPIDeCacheParaLog();
 		Cronometro profile = new Cronometro();
 		try {
 			profile.start();
@@ -73,7 +73,6 @@ public class ProfilesELogs {
 	public void verificaCharsetResources(JoinPoint joinPoint) {
 		String texto = null;
 		for (Object obj : joinPoint.getArgs()) {
-			
 			
 			if (!(obj instanceof String)) 
 				continue;
