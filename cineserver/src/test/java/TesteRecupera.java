@@ -6,10 +6,7 @@ import javax.persistence.PersistenceContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.cineagora.dao.interfaces.CinemaDao;
 import br.com.cineagora.model.Cinema;
+import br.com.cineagora.model.apresentacao.FilmeCartaz;
 import br.com.cineagora.model.element.CinemaElement;
 import br.com.cineagora.negocio.CinemaService;
 
@@ -27,47 +25,28 @@ import br.com.cineagora.negocio.CinemaService;
 @WebAppConfiguration
 @ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-public class TestePersistencia {
+public class TesteRecupera {
 
 	@Resource(type = CinemaDao.class)
 	private CinemaDao cinemaDao;
 
-	@PersistenceContext
-	private EntityManager em;
-
-	@Autowired
-	private CinemaService cinemaService;
-
 	Cinema cinema;
 
-	// @Test
-	@Transactional
-	public void recupera() {
-		cinema = cinemaDao.find(100);
-		System.err.println(cinema.getNome());
-	}
-
-	//@Test
+	@Test
 	@Transactional(readOnly = true)
 	public void recuperaTudo() {
 		List<? extends Cinema> cinemas = cinemaDao.findAll(CinemaElement.class);
 		for (Cinema cinema : cinemas) {
 			System.out.println("Cinema: " + cinema.getNome());
 			for (br.com.cineagora.model.Filme f : cinema.getFilmes()) {
-				System.out.println("Filme: " + f);
+				System.out.println("Filme: " + ((FilmeCartaz)f).getNomeFilme().getNomeDoFilme());
 			}
 		}
 	}
-
-	// Vai direto buscar no site e salvar na base
-	@Test
-	@Transactional(readOnly = false)
-	public void salvaListaNaBase() {
-		// bate no site e insere na base
-		List<? extends Cinema> cinemas = cinemaService.obtemListaDeCinemasPorCidadeDoSite(
-				"Piracicaba", "São Paulo");
-		for (Cinema cinema : cinemas) {
-			System.out.println(cinema.getNome());
-		}
+	//@Test
+	@Transactional
+	public void recupera() {
+		cinema = cinemaDao.find(100);
+		System.err.println(cinema.getNome());
 	}
 }

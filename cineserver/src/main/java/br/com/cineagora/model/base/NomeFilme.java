@@ -3,7 +3,9 @@ package br.com.cineagora.model.base;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CollectionTable;
@@ -29,19 +31,16 @@ import br.com.cineagora.model.apresentacao.FilmeCartaz;
 import br.com.cineagora.util.JsoupUtil;
 import br.com.cineagora.util.enums.DataApos;
 
-/**
- * 
- * @author Raul
- *
- */
-@Entity(name="nome_filme")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Entity(name = "nome_filme")
 public class NomeFilme implements Serializable {
-	
+
 	private static final long serialVersionUID = -8422182943359724062L;
-	
-	@Column(name="nome_do_filme")
+
+	@Column(name = "nome_do_filme", length=100)
 	private String nomeDoFilme;
-	
+
 	public String getNomeDoFilme() {
 		return nomeDoFilme;
 	}
@@ -75,14 +74,10 @@ public class NomeFilme implements Serializable {
 		return true;
 	}
 
-
-
-
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nome_filme2_seq")
 	@SequenceGenerator(name = "nome_filme2_seq", sequenceName = "nome_filme2_seq")
-	@Column(unique=false)
+	@Column(unique = false)
 	private int id;
 
 }

@@ -6,6 +6,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -76,12 +82,46 @@ public class JsoupUtil {
 		paramsUrlQuery = paramsUrlQuery == null ? "" : paramsUrlQuery;
 
 		String urlFinal = new StringBuffer().append(url).append(urlQuery).append(paramsUrlQuery).toString();
-
+		
 		Document doc = null;
+		
+		//Request do Jsoup demonstrou inumeros bugs ao trazer o response com a emissao de diversos elementos
+		//doc = fazRequestComJsoup(urlFinal);
+		
+		//EntityUtils.toString(entity)
+		doc = Jsoup.parse(requestComApacheHttpClient(urlFinal), urlFinal);
+		
+		return doc;
+	}
 
+	
+	public static String requestComApacheHttpClient(String url) {
+		String responseBody = null;
+		 HttpClient httpclient = new DefaultHttpClient();
+	        try {
+	            HttpGet httpget = new HttpGet(url);
+
+	            System.out.println("Executando Request " + httpget.getURI());
+
+	            // Create a response handler
+	            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+	            try {
+					responseBody = httpclient.execute(httpget, responseHandler);
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new RuntimeException("Falha ao executar request");
+				}
+	        } finally {
+	            httpclient.getConnectionManager().shutdown();
+	        }
+	        
+	        return responseBody;
+		
+	}
+	private static Document fazRequestComJsoup(String urlFinal) {
 		// Random de 1 a 3
 		int alternaHeader = new Random().nextInt(3) + 1;
-
+		Document doc = null;
 		try {
 			switch (alternaHeader) {
 			case 1:

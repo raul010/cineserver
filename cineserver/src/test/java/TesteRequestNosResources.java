@@ -56,13 +56,13 @@ public class TesteRequestNosResources {
 		jsonObjectMapper = new ObjectMapper();
 	}
 
-	@Repeat(2)
+	//@Repeat(2)
 	@Test
 	public void fazRequest() throws Exception {
 		String[] links = new String[] { linkResourceSP, linkResourceRJ };
 		for (String link : links) {
 
-			link = Util.fazEncodeParaASCII(link);
+			//link = Util.fazEncodeParaASCII(link);
 			String result = this.mockMvc.perform(
 					get(link)
 					.contentType(MediaType.valueOf("text/html;charset=UTF-8"))

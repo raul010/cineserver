@@ -24,6 +24,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.cineagora.util.enums.Genero;
 
 /**
@@ -34,7 +36,7 @@ import br.com.cineagora.util.enums.Genero;
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Filme implements Serializable {
 	private static final long serialVersionUID = -8925942236632712514L;
 
@@ -48,10 +50,12 @@ public class Filme implements Serializable {
 	@CollectionTable(name = "genero_filme")
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	private Set<Genero> genero;
-	//nullable=false
+	
+	
 	@ManyToMany(mappedBy = "filmes", targetEntity = Cinema.class)
 	private Set<Cinema> cinemas;
-
+	
+	@JsonIgnore
 	public String getNome() {
 		return nome;
 	}
@@ -59,7 +63,6 @@ public class Filme implements Serializable {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
 	public Set<Genero> getGenero() {
 		return genero;
 	}
@@ -67,7 +70,7 @@ public class Filme implements Serializable {
 	public void setGenero(Set<Genero> genero) {
 		this.genero = genero;
 	}
-
+	@JsonIgnore
 	public Set<Cinema> getCinemas() {
 		return cinemas;
 	}
@@ -75,7 +78,7 @@ public class Filme implements Serializable {
 	public void setCinemas(Set<Cinema> cinemas) {
 		this.cinemas = cinemas;
 	}
-
+	@JsonIgnore
 	public int getId() {
 		return id;
 	}

@@ -35,7 +35,8 @@ import br.com.cineagora.util.enums.Estado;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "cinemaRegion")
 @NamedQueries({
 		@NamedQuery(name = "CinemaElement.findAll", 
-				query = "SELECT DISTINCT(c) FROM CinemaElement c LEFT JOIN FETCH c.filmes", 
+				query = "SELECT DISTINCT(c) FROM CinemaElement c "
+						+ "LEFT JOIN FETCH c.filmes", 
 				hints = { @QueryHint(name = "org.hibernate.cacheable", 
 				value = "true"), }),
 		@NamedQuery(name = "CinemaElementPorCidade.findAll",
@@ -57,12 +58,6 @@ public class Cinema implements Serializable {
 	@OneToOne(cascade = CascadeType.PERSIST)
 	private Endereco endereco;
 	
-	@Column(length=50, nullable = false)
-	private String cidade;
-
-	@Column(length=30, nullable = false)
-	private String estado;
-
 	@Column(nullable = false)
 	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name = "join_cinema_filme")
@@ -99,22 +94,6 @@ public class Cinema implements Serializable {
 
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
-	}
-
-	public String getCidade() {
-		return cidade;
-	}
-
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
-	}
-
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
 	}
 
 	@Override

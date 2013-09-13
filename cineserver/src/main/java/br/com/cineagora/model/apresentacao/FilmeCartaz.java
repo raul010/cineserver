@@ -23,6 +23,9 @@ import br.com.cineagora.model.base.NomeFilme;
 import br.com.cineagora.util.JsoupUtil;
 import br.com.cineagora.util.enums.DataApos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Contem a informacao dos horarios, data e ordenacao para apresentacao ao usuario
  * @author Raul
@@ -34,8 +37,7 @@ public class FilmeCartaz extends Filme {
 	@Enumerated(EnumType.ORDINAL)
 	private DataApos dia;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
-	//@Column(name="nome_filme")
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	private NomeFilme nomeFilme;
 
 	@ElementCollection(fetch=FetchType.EAGER)
@@ -86,11 +88,11 @@ public class FilmeCartaz extends Filme {
 	}
 	public FilmeCartaz() {
 	}
-
+	
 	public DataApos getdia() {
 		return dia;
 	}
-
+	@JsonIgnore
 	public String getDiaSemana() {
 		return diaSemana;
 	}

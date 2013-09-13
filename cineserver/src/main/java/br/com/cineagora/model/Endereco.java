@@ -3,6 +3,7 @@ package br.com.cineagora.model;
 import java.io.Serializable;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +17,8 @@ import javax.persistence.SequenceGenerator;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.cineagora.util.enums.Cidade;
 import br.com.cineagora.util.enums.Estado;
 
@@ -26,24 +29,31 @@ import br.com.cineagora.util.enums.Estado;
 public class Endereco implements Serializable {
 	private static final long serialVersionUID = 6348400782533816916L;
 
-	@Enumerated(EnumType.STRING)
-	private Cidade cidade;
+	//@Enumerated(EnumType.STRING)
+	@Column(length=100)
+	private String cidade;
 	
-	@Enumerated(EnumType.STRING)
-	private Estado estado;
+	//@Enumerated(EnumType.STRING)
+	@Column(length=40)
+	private String estado;
 	
-	public Cidade getCidade() {
+	public String getCidade() {
 		return cidade;
 	}
-	public void setCidade(Cidade cidade) {
+	@JsonIgnore
+	public void setCidade(String cidade) {
 		this.cidade = cidade;
 	}
-	public Estado getEstado() {
+
+	@JsonIgnore
+	public String getEstado() {
 		return estado;
 	}
-	public void setEstado(Estado estado) {
+
+	public void setEstado(String estado) {
 		this.estado = estado;
 	}
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="endereco_seq")
 	@SequenceGenerator(name="endereco_seq", sequenceName="endereco_seq")

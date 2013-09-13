@@ -16,7 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 @ContextConfiguration(locations = { "classpath:/META-INF/spring/applicationContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-public class Teste {
+public class TesteGeralAplicacao {
 	
 	@Test
 	public void teste2(){
@@ -24,6 +24,10 @@ public class Teste {
 		mapa.put(0, "");
 		mapa.put(-1, "");
 		mapa.put(1, "");
+		
+		System.out.println(System.identityHashCode(Cinema.class));
+		System.out.println(System.identityHashCode(Cinema.class));
+		System.out.println(System.identityHashCode(Cinema.class));
 	}
 	
 	//@Test

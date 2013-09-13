@@ -93,15 +93,16 @@ public class CinemaService {
 		Elements elemsBlocoCinema = null;
 		Elements elemsBlocoFilmes = null;
 		Document doc = null;
+		Set<NomeFilme> nomeFilmeSet = new HashSet<>();
 
 		int paginasPesquisadas = 0;
 		// pagina DEFAULT = 1. Para testes, definir ultima pagina do site.
-		int pagina = 1;
+		int pagina = 5;
 		boolean ultimaPagina = false;
 
 		while (!ultimaPagina) {
 			doc = JsoupUtil.configuraEFazRequest(url, "?page=", Integer.toString(pagina));
-
+			System.out.println(doc.toString());
 			// bloco com nome dos cinemas
 			elemsBlocoCinema = doc.getElementsByClass("j_entity_container");
 			// bloco com nome dos filmes
@@ -123,14 +124,14 @@ public class CinemaService {
 
 				cinema.setNome(Util.unescapeHtml(cine));
 				endereco.setDadosRecebidos(Util.unescapeHtml(enderecoCinema));
-
+				
+				endereco.setCidade(cidade);
+				endereco.setEstado(estado);
 				cinema.setEndereco(endereco);
 
 				// Recupera todos filmes de cada cinema iterado
 				Element elementoComFilmes = elemsBlocoFilmes.get(contFilme);
 
-				// Set<NomeFilme> nomeFilmeSet = new HashSet<>();
-				Set<NomeFilme> nomeFilmeSet = new HashSet<>();
 				// Recupera cada filme (de um cinema), para ate 8 dias
 				for (int i = 0; i <= 8; i++) {
 					String diaDaSemana = JsoupUtil.diaDaSemana(i);
@@ -150,10 +151,15 @@ public class CinemaService {
 					// iterado
 					for (Element elemFilme : elemsFilmes) {
 						FilmeCartaz filmeCartaz = new FilmeCartaz(i);
-						NomeFilme nomeFilme = new NomeFilme();
+						NomeFilme nomeFilmeEntidade = new NomeFilme();
 
 						// String attrFilme = elemFilme.attr("data-movie");
 						Element elemHora = elemFilme.nextElementSibling();
+						
+						//TODO: erro corriqueiro do site, simplesmente tratar para iterar laco apartir daqui.
+						if (elemHora == null) 
+							throw new RuntimeException("TRATAR: Erro na pagina de filmes");
+						
 						Elements elemsHora = elemHora.getElementsByAttribute("data-times");
 
 						for (Element hora : elemsHora) {
@@ -162,28 +168,12 @@ public class CinemaService {
 
 						String nomeDoFilme = Util.unescapeHtml(elemFilme);
 
-						nomeFilme.setNomeDoFilme(nomeDoFilme);
+						nomeFilmeEntidade.setNomeDoFilme(nomeDoFilme);
 
-						// adiciona no HashSet apenas se ainda nao existe outro
-						// filme com
-						// mesmo nome (equals implementado)
-						if (nomeFilmeSet.add(nomeFilme)) {
-							filmeCartaz.setNomeFilme(nomeFilme);
-							
-							// se ja houver NomeFilme na lista, adiciona este
-							// existente no FilmeCartaz
-						} else {
-							for (NomeFilme nf : nomeFilmeSet) {
-								String nome = nf.getNomeDoFilme();
-
-								if (nome.equals(nomeDoFilme)) {
-									filmeCartaz.setNomeFilme(nf);
-									break;
-								}
-							}
-						}
-						cinema.setCidade(cidade);
-						cinema.setEstado(estado);
+						atribuiUnicoObjetoFilmeQuandoSemelhante(nomeFilmeSet, filmeCartaz, nomeFilmeEntidade, nomeDoFilme);
+						
+//						cinema.setCidade(cidade);
+//						cinema.setEstado(estado);
 						
 						if (!cinema.addFilme(filmeCartaz))
 							throw new RuntimeException("Set nao poderia ter voltado FALSE");
@@ -224,5 +214,27 @@ public class CinemaService {
 		LOG.info(listaDeCinemas.size() + " Quantidade de cinemas encontrados");
 		return listaDeCinemas;
 
+	}
+	/**
+	 * Garante coluna unica de nome do filme na tabela nome_filme com join para filme_cartaz
+	 * @param nomeFilmeSet
+	 * @param filmeCartaz
+	 * @param nomeFilme
+	 * @param nomeDoFilme
+	 */
+	private void atribuiUnicoObjetoFilmeQuandoSemelhante(Set<NomeFilme> nomeFilmeSet,
+			FilmeCartaz filmeCartaz, NomeFilme nomeFilme, String nomeDoFilme) {
+		if (nomeFilmeSet.add(nomeFilme)) {
+			filmeCartaz.setNomeFilme(nomeFilme);
+		} else {
+			for (NomeFilme nf : nomeFilmeSet) {
+				String nome = nf.getNomeDoFilme();
+
+				if (nome.equals(nomeDoFilme)) {
+					filmeCartaz.setNomeFilme(nf);
+					break;
+				}
+			}
+		}
 	}
 }

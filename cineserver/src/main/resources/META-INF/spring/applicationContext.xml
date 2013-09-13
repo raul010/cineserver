@@ -2,7 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans                     
 						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
 						http://www.springframework.org/schema/mvc 
@@ -12,33 +14,40 @@
 						http://www.springframework.org/schema/context 
 						http://www.springframework.org/schema/context/spring-context-3.2.xsd
 						http://www.springframework.org/schema/jee
-						http://www.springframework.org/schema/jee/spring-jee.xsd">
+						http://www.springframework.org/schema/jee/spring-jee.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+						http://www.springframework.org/schema/task
+						http://www.springframework.org/schema/task/spring-task-3.2.xsd
+						">
+	<!-- ### DEFINICOES E ABILITACOES ### -->
 
-	<!-- Rest e JSON CONFIG -->
+	<!-- MVC habilitado para uso com Rest e Json -->
 	<mvc:annotation-driven />
-		<!-- mvc:message-converters>
-			<bean
-				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-				<property name="objectMapper">
-					<bean class="br.com.cineagora.util.registros.HibernateAwareObjectMapper" />
-				</property>
-			</bean>
-		</mvc:message-converters>
-	</mvc:annotation-driven -->
+	<!-- Habilita anotacoes -->
+	<context:annotation-config />
+	<!-- Para rodar metodos de rotinas de banco de dados -->
+	<task:annotation-driven />
+	<!-- Cria um suporte annotation driven transaction usando AspectJ -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- Habilita Aspect Oriented Programming -->
+	<aop:aspectj-autoproxy />
 
-	<!-- Configure transaction manager for JPA -->
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactory" />
-	</bean>
+	<!-- Onde contem anotacoes de stereotypes(e.g @Component, @Service , @Repository) -->
+	<context:component-scan base-package="br.com.cineagora">
+		<!-- dao.GenericDaoImpl - deve ser obrigatoriamente excluido do scan, por 
+			nao existir supertype generico na fase de scan do spring -->
+		<context:exclude-filter type="regex"
+			expression=".dao.GenericDaoImpl" />
+		<context:exclude-filter type="regex"
+			expression=".dao.interfaces*" />
+	</context:component-scan>
 
-
-	<!-- Lookup a JNDI datasource -->
-	<jee:jndi-lookup id="dataSource" jndi-name="java:/CineDS" />
-
-	<!-- Configure the EntityManagerFactory -->
+	<!-- ### CONFIGURACOES DE BASE ### -->
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
+
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="databasePlatform" value="${jdbc.dialect}" />
@@ -46,31 +55,43 @@
 		</property>
 		<property name="jpaProperties">
 			<props>
+				<!-- ### propriedades do hibernate ### -->
 				<prop key="hibernate.show_sql">${jdbc.showsql}</prop>
-				<!-- prop key="hibernate.cache.use_second_level_cache">true</prop -->
-				<!-- prop key="hibernate.cache.use_query_cache">true</prop -->
-				<!-- prop key="hibernate.cache.region.factory_class" -->
-				<!-- org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory -->
-				<!-- /prop -->
+				<prop key="hibernate.hbm2ddl.auto">${jdbc.hbm2ddl}</prop>
+				<!-- Cache -->
 			</props>
 		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean
 		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
-	<!-- Arquivo de Resources -->
-	<context:property-placeholder location="classpath*:META-INF/jdbc.properties" />
+	<!-- ### CONFIGURACOES DE PROFILE / DATASOURCE ### -->
 
-	<!-- Contexto das anotacoes -->
-	<context:annotation-config />
+	<!-- Profile Dev para teste -->
+	<beans profile="dev">
+		<bean id="dataSource"
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+			<property name="driverClassName" value="${jdbc.driverClassName}" />
+			<property name="url" value="${jdbc.url}" />
+		</bean>
+		<!-- Para teste assume este Resource -->
+		<context:property-placeholder
+			location="classpath*:META-INF/jdbc-teste.properties" />
+	</beans>
 
-	<!-- Pacote que contem os esteriotipos -->
-	<context:component-scan base-package="br.com.cineagora" />
-
-	<!-- Transacao sera aceita na app inteira -->
-	<tx:jta-transaction-manager />
-
-	<!-- Create an annotation driven transaction support using AspectJ -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- Profile default da aplicacao, conforme <context-param> do web.xml -->
+	<beans profile="producao">
+		<jee:jndi-lookup id="dataSource" jndi-name="java:jboss/datasources/CineDS"  />
+		<!-- Para producao assume este Resource -->
+		<context:property-placeholder location="classpath*:META-INF/jdbc.properties" />
+		<!-- Transacao sera aceita na app inteira -->
+		<tx:jta-transaction-manager />
+	</beans>
 </beans>

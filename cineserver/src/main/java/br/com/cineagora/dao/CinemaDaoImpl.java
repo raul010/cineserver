@@ -37,7 +37,7 @@ public class CinemaDaoImpl extends GenericDaoImpl<Cinema> implements CinemaDao {
 	 *            <? extends Cinema>
 	 */
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional(readOnly=true)
 	public List<? extends Cinema> findAll(Class<? extends Cinema> clazz) {
 		TypedQuery<CinemaElement> query = null;
 		List<CinemaElement> cinemas = null;
